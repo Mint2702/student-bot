@@ -14,7 +14,7 @@ from ..settings import settings
 
 @basic_message_decorator_no_arg
 def enter_study_type(message, bot):
-    study_type = message.text
+    study_type = message.text[2:]
     order = redis_.load_data(message.chat.id)
     order["study_type"] = study_type
     redis_.dump_data(message.chat.id, order)
