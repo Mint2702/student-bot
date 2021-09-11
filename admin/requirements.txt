@@ -1,0 +1,6 @@
+pydantic
+loguru
+pydantic[dotenv]
+pyTelegramBotAPI
+flask
+psycopg2 == 2.9.1

@@ -1,0 +1,40 @@
+create table Users (id integer Primary Key,
+					username varchar(80) NOT NULL,
+					first_name varchar(80),
+					last_name varchar(80),
+				    uni varchar(80),
+				    study_year varchar(80),
+					is_admin bool NOT NULL DEFAULT false,
+					created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+
+create table OrderWork (id varchar(32) Primary Key,
+					work_date varchar(80) NOT NULL,
+					user_id integer REFERENCES Users (id) NOT NULL,
+					discipline varchar(80),
+				    theme varchar(80),
+				    volume integer,
+					unique_persentage integer,
+					order_type varchar(80) NOT NULL,
+					comment varchar(80),
+					file_names varchar(80) ARRAY[10],
+					created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+					
+create table OrderHelp (id varchar(32) Primary Key,
+					work_date varchar(80) NOT NULL,
+					work_time varchar(80) NOT NULL,
+					user_id integer References Users NOT NULL,
+					discipline varchar(80),
+				    format varchar(80),
+					comment varchar(80),
+					file_names varchar(80) ARRAY[10],
+					created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+
+create table Tutoring (id varchar(32) Primary Key,
+					study_type varchar(80) NOT NULL,
+					study_name varchar(80),
+					user_id integer References Users NOT NULL,
+					study_year integer,
+				    lessons varchar(200),
+					tutor_sex varchar(50),
+					comment varchar(80),
+					created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());

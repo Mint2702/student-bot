@@ -1,0 +1,25 @@
+version: "3"
+services:
+  bot:
+    build: bot/
+    container_name: bot
+    ports:
+      - 7000:7000
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    restart: on-failure
+    volumes:
+      - ./bot_files:/bot_files
+  admin:
+    build: admin/
+    container_name: admin
+    ports:
+      - 8000:8000
+    restart: on-failure
+    volumes:
+      - ./bot_files:/bot_files
+
+networks:
+  default:
+    external: true
+    name: bot_net
