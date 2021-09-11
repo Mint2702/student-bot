@@ -16,9 +16,9 @@ def generate_start_markup():
     button3 = types.KeyboardButton(buttons[2])
     button4 = types.KeyboardButton(buttons[3])
     button5 = types.KeyboardButton(buttons[4])
+    markup.row(button5)
     markup.row(button1, button2)
     markup.row(button3, button4)
-    markup.row(button5)
 
     return markup
 
