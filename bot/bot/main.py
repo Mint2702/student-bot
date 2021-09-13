@@ -38,7 +38,7 @@ def start(message):
     )
 
 
-@bot.message_handler(regexp="Заказать работу")
+@bot.message_handler(regexp="Заказать")
 @basic_message_decorator(bot)
 def order_work(message):
     markup = generate_work_type_markup()
