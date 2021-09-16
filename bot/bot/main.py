@@ -33,12 +33,12 @@ def start(message):
 
     bot.send_message(
         message.chat.id,
-        f"Приветствуем, {message.from_user.first_name}! Этот бот поможет тебе заказать работу.",
+        f"Приветствуем, {message.from_user.first_name}! Этот бот поможет тебе оформить заказ.",
         reply_markup=markup,
     )
 
 
-@bot.message_handler(regexp="Заказать")
+@bot.message_handler(regexp="оформить заказ")
 @basic_message_decorator(bot)
 def order_work(message):
     markup = generate_work_type_markup()
