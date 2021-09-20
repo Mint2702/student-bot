@@ -34,6 +34,11 @@ def start(message):
     bot.send_message(
         message.chat.id,
         f"Приветствуем, {message.from_user.first_name}! Этот бот поможет тебе оформить заказ.",
+    )
+
+    bot.send_message(
+        message.chat.id,
+        "Спасибо за установку, дарим купон 300₽ на первый заказ.",
         reply_markup=markup,
     )
 
