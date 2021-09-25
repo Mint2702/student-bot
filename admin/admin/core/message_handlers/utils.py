@@ -2,6 +2,7 @@ from loguru import logger
 from datetime import datetime
 
 from ..db.requests import check_user
+from .markups import generate_markup
 
 
 def auth(bot):
@@ -84,3 +85,12 @@ def format_stat(works: list, helps: list, type_stat: str) -> str:
         stat += f"    {item[0]}  -  {item[1]}\n"
 
     return stat
+
+
+def cancel_order(message, bot):
+    markup = generate_markup()
+    bot.send_message(
+        chat_id=message.from_user.id,
+        text="Расылка отменена",
+        reply_markup=markup,
+    )

@@ -93,3 +93,11 @@ def get_users_num(cursor):
     row = cursor.fetchall()
 
     return row
+
+
+@sql_task
+def get_users_ids(cursor):
+    cursor.execute("SELECT id FROM Users")
+    row = cursor.fetchall()
+
+    return row

@@ -4,7 +4,7 @@ services:
     build: bot/
     container_name: bot2
     ports:
-      - 5000:7000
+      - 4000:9000
     extra_hosts:
       - "host.docker.internal:172.17.0.1"
     restart: on-failure

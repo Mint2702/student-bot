@@ -4,3 +4,5 @@ pydantic[dotenv]
 pyTelegramBotAPI
 flask
 psycopg2 == 2.9.1
+redis == 3.5.3
+ujson == 4.0.2

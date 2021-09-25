@@ -11,6 +11,10 @@ class Settings(BaseSettings):
     psql_host: str = Field(..., env="PSQL_DB_HOST")
     psql_port: str = Field(..., env="PSQL_DB_PORT")
 
+    bot_url: str = Field(..., env="BOT_URL")
+
+    redis_url: str = Field(..., env="REDIS_URL")
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

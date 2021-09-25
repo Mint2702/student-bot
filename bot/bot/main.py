@@ -1,3 +1,5 @@
+from flask import Flask, request, Response
+import threading
 from telebot import TeleBot, types
 import uuid
 import time
@@ -24,6 +26,8 @@ from core.message_handlers.find_tutor_logic import enter_study_type
 
 TOKEN = settings.token
 bot = TeleBot(TOKEN, parse_mode=None)
+
+app = Flask(__name__)
 
 
 @bot.message_handler(commands=["start"])
@@ -165,8 +169,46 @@ def echo_all(message):
     )
 
 
-while True:
+@app.route("/message_all", methods=["POST"])
+def message_all():
+    body = request.json
+    users_ids = body.get("ids")
+    message = body.get("message")
     try:
-        bot.infinity_polling()
+        for id in users_ids:
+            bot.send_message(
+                id,
+                message,
+            )
+
+        return Response(status=201)
     except:
-        time.sleep(30)
+        return Response(status=500)
+
+
+def start_bot():
+    while True:
+        try:
+            bot.infinity_polling()
+        except:
+            time.sleep(30)
+
+
+def start_server():
+    app.run(port=9000, host="0.0.0.0")
+
+
+if __name__ == "__main__":
+    bot_thread = threading.Thread(target=start_bot)
+    bot_thread.daemon = True
+    bot_thread.start()
+
+    server_thread = threading.Thread(target=start_server)
+    server_thread.daemon = True
+    server_thread.start()
+
+    while True:
+        try:
+            time.sleep(10)
+        except KeyboardInterrupt:
+            break

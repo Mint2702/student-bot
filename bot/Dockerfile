@@ -7,7 +7,7 @@ COPY ./requirements.txt /
 RUN pip install -r requirements.txt
 RUN pip install pydantic[dotenv]
 
-EXPOSE 7000
+EXPOSE 9000
 
 WORKDIR /bot
 

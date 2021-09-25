@@ -1,9 +1,11 @@
 from flask import Flask, request
+import requests
 from telebot import TeleBot
 import threading
 import time
 from pathlib import Path
 
+from core import redis_
 from core.settings import settings
 from core.db.requests import (
     get_user,
@@ -15,6 +17,7 @@ from core.db.requests import (
     get_helps,
     get_users_num,
     get_tutoring,
+    get_users_ids,
 )
 from core.message_handlers.utils import (
     auth,
@@ -22,8 +25,13 @@ from core.message_handlers.utils import (
     format_help,
     format_stat,
     format_tutoring,
+    cancel_order,
 )
-from core.message_handlers.markups import generate_markup
+from core.message_handlers.markups import (
+    generate_markup,
+    generate_check_message_all_markup,
+    generate_decline_markup,
+)
 
 
 TOKEN = settings.token
@@ -62,10 +70,55 @@ def enter_password(message):
 @auth(bot)
 def users_num(message):
     users = get_users_num()[0][0]
-    msg = bot.send_message(
+    bot.send_message(
         message.chat.id,
         f"Количество пользователей - {users}",
     )
+
+
+@bot.message_handler(regexp="Рассылка")
+@auth(bot)
+def message_all(message):
+    markup = generate_decline_markup()
+    msg = bot.send_message(
+        message.chat.id,
+        "Введи сообщение, которое ты хочешь разослать всем пользователям бота:",
+        reply_markup=markup,
+    )
+    bot.register_next_step_handler(msg, check_message)
+
+
+def check_message(message):
+    if message.text == "Отменить":
+        cancel_order(message, bot)
+    else:
+        redis_.dump_data("message all", message.text)
+        message_text = redis_.load_data("message all")
+        markup = generate_check_message_all_markup()
+        msg = bot.send_message(
+            message.chat.id,
+            f"Ты уверен, что хочешь разослать всем пользователем бота данное сообщение: {message_text}",
+            reply_markup=markup,
+        )
+        bot.register_next_step_handler(msg, send_messages_to_all)
+
+
+def send_messages_to_all(message):
+    if message.text == "Отменить":
+        cancel_order(message, bot)
+    else:
+        users_ids = get_users_ids()
+        users_ids = [id[0] for id in users_ids]
+        message_text = redis_.load_data("message all")
+        body = {"ids": users_ids, "message": message_text}
+        res = requests.post(f"{settings.bot_url}/message_all", json=body)
+        markup = generate_markup()
+        if res.ok:
+            bot.send_message(
+                message.chat.id, "Рассылка произведена", reply_markup=markup
+            )
+        else:
+            bot.send_message(message.chat.id, "Ошибка", reply_markup=markup)
 
 
 @bot.message_handler(regexp="стат")
